@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-import $ from 'jquery';
+import $ from "jquery";
 
-import {Field} from './field';
+import { Field } from "./field";
 
 export class TextField extends Field {
   createUi(container) {
-    var fieldContainer = $('.form-field-container', super.createUi(container));
+    var fieldContainer = $(".form-field-container", super.createUi(container));
 
-    this.el_ = $('<input>')
-        .attr('type', 'text')
-        .attr('placeholder', this.params_.placeholder)
-        .addClass('form-field-text')
-        .val(this.getValue())
-        .on('input', ev => {
-          var oldVal = this.getValue();
-          var newVal = $(ev.currentTarget).val();
-          if (oldVal != newVal) {
-            this.setValue(newVal, true);
-          }
-        })
-        .appendTo(fieldContainer);
+    this.el_ = $("<input>")
+      .attr("type", "text")
+      .attr("placeholder", this.params_.placeholder)
+      .addClass("form-field-text border rounded")
+      .val(this.getValue())
+      .on("input", (ev) => {
+        var oldVal = this.getValue();
+        var newVal = $(ev.currentTarget).val();
+        if (oldVal != newVal) {
+          this.setValue(newVal, true);
+        }
+      })
+      .appendTo(fieldContainer);
   }
 
   getValue() {
     var value = this.value_;
-    if (typeof value != 'string') {
-      value = this.params_.defaultValue || '';
+    if (typeof value != "string") {
+      value = this.params_.defaultValue || "";
     }
     return value;
   }

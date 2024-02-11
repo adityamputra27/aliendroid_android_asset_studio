@@ -14,44 +14,43 @@
  * limitations under the License.
  */
 
-import $ from 'jquery';
+import $ from "jquery";
 
-import {Field} from './field';
+import { Field } from "./field";
 
 export class RangeField extends Field {
   createUi(container) {
-    var fieldContainer = $('.form-field-container', super.createUi(container));
+    var fieldContainer = $(".form-field-container", super.createUi(container));
     var me = this;
 
-    this.el_ = $('<div>')
-        .addClass('form-field-range')
-        .attr('id', this.getHtmlId())
-        .appendTo(fieldContainer);
+    this.el_ = $("<div>")
+      .addClass("form-field-range")
+      .attr("id", this.getHtmlId())
+      .appendTo(fieldContainer);
 
-    this.rangeEl_ = $('<input>')
-        .attr('type', 'range')
-        .attr('min', this.params_.min || 0)
-        .attr('max', this.params_.max || 100)
-        .attr('step', this.params_.step || 1)
-        .on('input', () => this.setValue(Number(this.rangeEl_.val()) || 0, true))
-        .val(this.getValue())
-        .appendTo(this.el_);
+    this.rangeEl_ = $("<input>")
+      .attr("type", "range")
+      .attr("min", this.params_.min || 0)
+      .attr("max", this.params_.max || 100)
+      .attr("step", this.params_.step || 1)
+      .on("input", () => this.setValue(Number(this.rangeEl_.val()) || 0, true))
+      .val(this.getValue())
+      .appendTo(this.el_);
 
     if (this.params_.textFn || this.params_.showText) {
-      this.params_.textFn = this.params_.textFn || (d => d);
-      this.textEl_ = $('<div>')
-          .addClass('form-field-range-text')
-          .text(this.params_.textFn(this.getValue()))
-          .appendTo(this.el_);
+      this.params_.textFn = this.params_.textFn || ((d) => d);
+      this.textEl_ = $("<div>")
+        .addClass("form-field-range-text")
+        .text(this.params_.textFn(this.getValue()))
+        .appendTo(this.el_);
     }
   }
 
   getValue() {
     var value = this.value_;
-    if (typeof value != 'number') {
+    if (typeof value != "number") {
       value = this.params_.defaultValue;
-      if (typeof value != 'number')
-        value = 0;
+      if (typeof value != "number") value = 0;
     }
     return value;
   }

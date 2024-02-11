@@ -20,12 +20,11 @@ $formFieldSpacing: 24px;
 
 .inputs-panel {
   box-sizing: border-box;
-  background-color: material-color('grey', '100');
-  width: 400px;
+  background-color: white;
+  width: 450px;
   flex: 0 0 auto;
   overflow-x: hidden;
   overflow-y: auto;
-  box-shadow: material-shadow(2);
   padding: 24px 0;
   z-index: 2;
 
@@ -59,7 +58,7 @@ $formFieldSpacing: 24px;
   }
 
   &[disabled] {
-    opacity: .2;
+    opacity: 0.2;
     pointer-events: none;
     user-select: none;
     filter: grayscale(100%);
@@ -80,7 +79,6 @@ $formFieldSpacing: 24px;
   align-self: flex-start;
   border-radius: 2px;
   border: 0;
-  box-shadow: 0 0 0 1px $thinBorderColor;
   padding: $formFieldPaddingY $formFieldPaddingX;
   font-family: Roboto, sans-serif;
   font-size: 14px;
@@ -89,11 +87,10 @@ $formFieldSpacing: 24px;
   outline: 0;
 
   &:focus {
-    box-shadow: 0 0 0 2px $colorPrimary;
   }
 
   &[disabled] {
-    opacity: .5;
+    opacity: 0.5;
     user-select: none;
     cursor: not-allowed;
     filter: grayscale(100%);
@@ -113,15 +110,15 @@ $formFieldSpacing: 24px;
 
   select {
     @include form-field-element;
-    padding:
-        $formFieldPaddingY ($formFieldPaddingX + 16px) $formFieldPaddingY $formFieldPaddingX;
+    padding: $formFieldPaddingY ($formFieldPaddingX + 16px) $formFieldPaddingY
+      $formFieldPaddingX;
     cursor: pointer;
     appearance: none;
   }
 
   &::after {
     @include material-icons;
-    content: 'arrow_drop_down';
+    content: "arrow_drop_down";
     position: absolute;
     color: $colorBlackSecondary;
     right: 4px;
@@ -147,7 +144,7 @@ $formFieldSpacing: 24px;
   flex-direction: row;
   overflow: hidden;
 
-  input[type=radio] {
+  input[type="radio"] {
     display: none;
   }
 
@@ -200,7 +197,6 @@ $formFieldSpacing: 24px;
   display: flex;
   flex-direction: column;
   margin-top: 8px;
-  box-shadow: material-shadow(2);
   border-radius: 2px;
   background-color: #fff;
   overflow: hidden;
@@ -214,7 +210,7 @@ $formFieldSpacing: 24px;
 // because inputs can't have pseudoelements
 .form-image-type-params-clipart::before {
   @include material-icons;
-  content: 'search';
+  content: "search";
   display: block;
   color: $colorBlackTertiary;
   font-size: 20px;
@@ -231,8 +227,8 @@ $formFieldSpacing: 24px;
   border: 0;
   padding: 8px 8px 8px 40px;
   outline: 0;
-  box-shadow: 0 1px 0 $thinBorderColor;
   z-index: 1;
+  border-bottom: 1px solid #ddd;
 
   &::placeholder {
     color: $colorBlackTertiary;
@@ -241,7 +237,8 @@ $formFieldSpacing: 24px;
 
 .form-image-clipart-list {
   height: 200px;
-  padding: 16px;
+  padding-top: 16px;
+  padding-bottom: 16px;
   display: flex;
   flex-flow: row wrap;
   align-content: flex-start;
@@ -255,15 +252,11 @@ $formFieldSpacing: 24px;
   overflow: hidden;
   width: 36px;
   height: 36px;
-  padding: 8px;
+  margin: 8px;
   cursor: pointer;
   border-radius: 50%;
 
   color: $colorBlackPrimary;
-  transition:
-      color .1s ease,
-      background-color .1s ease,
-      box-shadow .1s ease;
 
   &:hover,
   &:focus {
@@ -272,7 +265,6 @@ $formFieldSpacing: 24px;
 
   &.is-selected {
     color: $colorWhitePrimary;
-    box-shadow: 0 0 0 4px $colorPrimary;
     background-color: $colorPrimary;
   }
 }
@@ -282,7 +274,6 @@ $formFieldSpacing: 24px;
   line-height: 16px;
   padding: 4px 8px;
   color: $colorBlackTertiary;
-  box-shadow: 0 -1px 0 $thinBorderColor;
 }
 
 .form-image-preview {
@@ -332,7 +323,7 @@ $formFieldSpacing: 24px;
       height: 16px;
       border-radius: 50%;
       transform: translateY(calc(-50% + 1px));
-      transition: transform .1s ease;
+      transition: transform 0.1s ease;
     }
   }
 }
@@ -352,19 +343,23 @@ $formFieldSpacing: 24px;
   position: relative;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba($colorAccent, .5);
-    animation: pulsate-color .33s ease 0s infinite alternate;
+    background-color: rgba($colorAccent, 0.5);
+    animation: pulsate-color 0.33s ease 0s infinite alternate;
     z-index: 1000;
 
     @keyframes pulsate-color {
-      from { opacity: .5 }
-      to { opacity: 1 }
+      from {
+        opacity: 0.5;
+      }
+      to {
+        opacity: 1;
+      }
     }
   }
 }
@@ -405,12 +400,11 @@ $formFieldSpacing: 24px;
   &-widget-swatch {
     width: 40px;
     height: 20px;
-    box-shadow: 0 0 0 1px rgba(#000, .12);
     position: relative;
 
     &::before,
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 0;

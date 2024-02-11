@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import $ from 'jquery';
+import $ from "jquery";
 
 /**
  * Represents a form field and its associated UI elements. This should be
@@ -52,7 +52,7 @@ export class Field {
    * @type String
    */
   getLongId() {
-    return this.form_.id_ + '-' + this.id_;
+    return this.form_.id_ + "-" + this.id_;
   }
 
   /**
@@ -60,7 +60,7 @@ export class Field {
    * @type String
    */
   getHtmlId() {
-    return '_frm-' + this.getLongId();
+    return "_frm-" + this.getLongId();
   }
 
   /**
@@ -72,23 +72,22 @@ export class Field {
    */
   createUi(container) {
     container = $(container);
-    this.baseEl_ = $('<div>')
-        .addClass('form-field-outer')
-        .addClass(this.params_.newGroup ? 'is-new-group' : '')
-        .append(
-          $('<label>')
-            .attr('for', this.getHtmlId())
-            .text(this.params_.title)
-            .append($('<div>')
-              .addClass('form-field-help-text')
-              .css('display', this.params_.helpText ? '' : 'none')
-              .html(this.params_.helpText))
-        )
-        .append(
-          $('<div>')
-            .addClass('form-field-container')
-        )
-        .appendTo(container);
+    this.baseEl_ = $("<div>")
+      .addClass("form-field-outer")
+      .addClass(this.params_.newGroup ? "is-new-group" : "")
+      .append(
+        $("<label>")
+          .attr("for", this.getHtmlId())
+          .text(this.params_.title)
+          .append(
+            $("<div>")
+              .addClass("form-field-help-text")
+              .css("display", this.params_.helpText ? "" : "none")
+              .html(this.params_.helpText)
+          )
+      )
+      .append($("<div>").addClass("form-field-container"))
+      .appendTo(container);
     return this.baseEl_;
   }
 
@@ -103,9 +102,9 @@ export class Field {
     this.enabled_ = enabled;
     if (this.baseEl_) {
       if (enabled) {
-        this.baseEl_.removeAttr('disabled');
+        this.baseEl_.removeAttr("disabled");
       } else {
-        this.baseEl_.attr('disabled', 'disabled');
+        this.baseEl_.attr("disabled", "disabled");
       }
     }
   }
@@ -115,6 +114,8 @@ export class Field {
   }
 
   notifyChanged_(newValue, oldValue) {
-    (this.changeListeners_ || []).forEach(listener => listener(newValue, oldValue));
+    (this.changeListeners_ || []).forEach((listener) =>
+      listener(newValue, oldValue)
+    );
   }
 }
