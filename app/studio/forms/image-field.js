@@ -180,9 +180,9 @@ export class ImageField extends Field {
           })),
         ],
       });
-      this.loadGoogleWebFontsList_().then((fonts) =>
-        fontFamilyField.setOptions([""].concat(fonts))
-      );
+      this.loadGoogleWebFontsList_().then((fonts) => {
+        fontFamilyField.setOptions([""].concat(fonts));
+      });
 
       let tryLoadWebFontDebounced_ = Util.debounce(500, () =>
         this.tryLoadWebFont_()
