@@ -21,7 +21,7 @@ $formFieldSpacing: 24px;
 .inputs-panel {
   box-sizing: border-box;
   background-color: white;
-  width: 450px;
+  width: 500px;
   flex: 0 0 auto;
   overflow-x: hidden;
   overflow-y: auto;
@@ -248,10 +248,10 @@ $formFieldSpacing: 24px;
 
 .form-image-clipart-item {
   @include material-icons;
-  font-size: 36px;
+  font-size: 24px;
   overflow: hidden;
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   margin: 8px;
   cursor: pointer;
   border-radius: 50%;

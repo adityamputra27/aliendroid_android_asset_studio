@@ -1,14 +1,25 @@
 {% extends '_base.html' %} {% block body %} {% block banner %}{% endblock %}
 <nav
   class="navbar navbar-expand-lg bg-white"
-  style="padding-top: 3rem; padding-bottom: 3rem"
+  style="padding-top: 1rem; padding-bottom: 1rem"
 >
   <div class="container-fluid">
-    <div class="d-flex">
+    <div class="d-flex me-5">
       <a class="navbar-brand" href="index.html">
         <i class="material-icons text-black">arrow_back</i>
       </a>
       <h4 class="fw-bold text-black">{{ title }}</h4>
+    </div>
+    <div class="collapse navbar-collapse" style="margin-left: 7.5em">
+      <div class="platform-picker">
+        <label class="platform-picker-item" for="android">
+          <input type="radio" name="" id="android" />
+          <div class="d-flex justify-content-center align-items-center">
+            <i class="material-icons text-black">android</i>
+            &nbsp;Android
+          </div>
+        </label>
+      </div>
     </div>
   </div>
 </nav>
