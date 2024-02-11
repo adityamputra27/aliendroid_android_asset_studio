@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-import $ from 'jquery';
+import $ from "jquery";
 
-import * as studio from './studio';
+import * as studio from "./studio";
 
-const DENSITIES = new Set(['xxxhdpi', 'xxhdpi', 'xhdpi', 'hdpi', 'mdpi']);
+const DENSITIES = new Set(["xxxhdpi", "xxhdpi", "xhdpi", "hdpi", "mdpi"]);
 const REGENERATE_DEBOUNCE_TIME = 200;
 
-const DEFAULT_VISIBLE_SLOT = 'xxxhdpi';
+const DEFAULT_VISIBLE_SLOT = "xxxhdpi";
 
 export class BaseGenerator {
   constructor() {
     this.regenerateDebounced_ = studio.Util.debounce(
-        REGENERATE_DEBOUNCE_TIME,
-        () => this.regenerate());
+      REGENERATE_DEBOUNCE_TIME,
+      () => this.regenerate()
+    );
 
     this.setupZipper();
     this.setupOutputUi();
@@ -38,37 +39,45 @@ export class BaseGenerator {
   }
 
   setupZipper() {
-    this.zipper = studio.Zip.createDownloadifyZipButton($('#download-zip-button'));
+    this.zipper = studio.Zip.createDownloadifyZipButton(
+      $("#download-zip-button")
+    );
   }
 
   setupOutputUi() {
     // grid toggle
     if (this.gridOverlaySvg) {
-      let defaultChecked = ('assetStudioShowGrid' in localStorage)
-          ? localStorage.assetStudioShowGrid === 'true'
+      let defaultChecked =
+        "assetStudioShowGrid" in localStorage
+          ? localStorage.assetStudioShowGrid === "true"
           : true;
-      $('#grid-toggle').prop('checked', defaultChecked);
-      $('.outputs-panel').toggleClass('show-grid', defaultChecked);
+      $("#grid-toggle").prop("checked", defaultChecked);
+      $(".outputs-panel").toggleClass("show-grid", defaultChecked);
 
-      $('#grid-toggle').click(ev => {
-        let checked = $(ev.currentTarget).is(':checked');
+      $("#grid-toggle").click((ev) => {
+        let checked = $(ev.currentTarget).is(":checked");
         localStorage.assetStudioShowGrid = String(checked);
-        $('.outputs-panel').toggleClass('show-grid', checked);
+        $(".outputs-panel").toggleClass("show-grid", checked);
       });
     } else {
-      $('#grid-toggle-container').hide();
+      $("#grid-toggle-container").hide();
     }
 
     // additional slots toggle
-    $('.outputs-additional-toggle').click(() => $('.outputs-panel').toggleClass('is-showing-all'));
+    $(".outputs-additional-toggle").click(() =>
+      $(".outputs-panel").toggleClass("is-showing-all")
+    );
   }
 
   setupOutputSlots() {
-    (this.outputSlots || this.densities).forEach(slot => {
+    (this.outputSlots || this.densities).forEach((slot) => {
       this.createImageOutputSlot_({
-        container: (slot == DEFAULT_VISIBLE_SLOT) ? $('.outputs-main') : $('.outputs-additional'),
+        container:
+          slot == DEFAULT_VISIBLE_SLOT
+            ? $(".outputs-main")
+            : $(".outputs-additional"),
         id: slot,
-        label: slot
+        label: slot,
       });
     });
   }
@@ -78,38 +87,37 @@ export class BaseGenerator {
   }
 
   createImageOutputSlot_(params) {
-    let $imageContainer = $('<div>')
-        .addClass('outputs-image-container')
-        .append($('<img>')
-          .addClass('outputs-image')
-          .attr('data-id', `out-icon-${params.id}`));
+    let $imageContainer = $("<div>")
+      .addClass("outputs-image-container")
+      .append(
+        $("<img>")
+          .addClass("outputs-image")
+          .attr("data-id", `out-icon-${params.id}`)
+      );
 
     if (this.gridOverlaySvg) {
-      $('<div>')
-          .addClass('outputs-image-overlay')
-          .html(this.gridOverlaySvg)
-          .appendTo($imageContainer);
+      $("<div>")
+        .addClass("outputs-image-overlay")
+        .html(this.gridOverlaySvg)
+        .appendTo($imageContainer);
     }
 
-    let $block = $('<div>')
-        .addClass('outputs-image-block')
-        .append($('<div>')
-          .addClass('outputs-label')
-          .text(params.label))
-        .append($imageContainer)
-        .appendTo(params.container);
+    let $block = $("<div>")
+      .addClass("outputs-image-block")
+      .append($("<div>").addClass("outputs-label").text(params.label))
+      .append($imageContainer)
+      .appendTo(params.container);
 
     return $block;
   }
 
   setImageForSlot_(id, url) {
-    studio.Util.loadImageFromUri(url)
-        .then(img => $(`[data-id="out-icon-${id}"]`).attr('src', img.src));
+    studio.Util.loadImageFromUri(url).then((img) =>
+      $(`[data-id="out-icon-${id}"]`).attr("src", img.src)
+    );
   }
 
-  setupForm() {
-  }
+  setupForm() {}
 
-  regenerate() {
-  }
+  regenerate() {}
 }

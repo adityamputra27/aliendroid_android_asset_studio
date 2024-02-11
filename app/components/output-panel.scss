@@ -30,8 +30,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-y: auto;
-  padding: 48px;
 }
 
 #grid-toggle-container {
@@ -47,9 +45,15 @@
   z-index: 1;
 }
 
+.outputs-result {
+  position: relative;
+}
+
 .outputs-main {
   flex: 0 0 auto;
-  margin: auto 0;
+  position: absolute;
+  top: 225px;
+  left: 48%;
 }
 
 .outputs-additional-toggle {
@@ -151,10 +155,11 @@
 }
 
 .outputs-image {
-  box-shadow: 0 0 0 1px $thinBorderColor;
   border-radius: 2px;
   display: inline-block;
   position: relative;
+  width: 46px;
+  height: 46px;
 }
 
 .outputs-image-group.dark {
