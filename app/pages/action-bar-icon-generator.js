@@ -36,116 +36,131 @@ const GRID_OVERLAY_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" xmlns=
     </svg>`;
 
 export class ActionBarIconGenerator extends BaseGenerator {
-  get gridOverlaySvg() {
-    return GRID_OVERLAY_SVG;
-  }
+    get gridOverlaySvg() {
+        return GRID_OVERLAY_SVG;
+    }
 
-  setupForm() {
-    super.setupForm();
+    setupForm() {
+        super.setupForm();
 
-    let defaultNameForSourceValue_ = (v) => {
-      let name = studio.Util.sanitizeResourceName(v.name || "example");
-      return `ic_action_${name}`;
-    };
+        let defaultNameForSourceValue_ = (v) => {
+            let name = studio.Util.sanitizeResourceName(v.name || "example");
+            return `ic_action_${name}`;
+        };
 
-    let nameField, customColorField;
-    this.form = new studio.Form({
-      id: "iconform",
-      container: "#inputs-form",
-      fields: [
-        new studio.ImageField("source", {
-          title: "Source",
-          helpText: "Must be transparent",
-          maxFinalSize: { w: 128, h: 128 },
-          clipartNoTrimPadding: true,
-          defaultValueClipart: "add_circle",
-          dropTarget: document.body,
-          onChange: (newValue, oldValue) => {
-            if (nameField.getValue() == defaultNameForSourceValue_(oldValue)) {
-              nameField.setValue(defaultNameForSourceValue_(newValue));
+        let nameField, customColorField;
+        this.form = new studio.Form({
+            id: "iconform",
+            container: "#inputs-form",
+            fields: [
+                new studio.ImageField("source", {
+                    title: "Source",
+                    helpText: "Must be transparent",
+                    maxFinalSize: { w: 128, h: 128 },
+                    clipartNoTrimPadding: true,
+                    defaultValueClipart: "add_circle",
+                    dropTarget: document.body,
+                    onChange: (newValue, oldValue) => {
+                        if (
+                            nameField.getValue() ==
+                            defaultNameForSourceValue_(oldValue)
+                        ) {
+                            nameField.setValue(
+                                defaultNameForSourceValue_(newValue)
+                            );
+                        }
+                    },
+                }),
+                (nameField = new studio.TextField("name", {
+                    title: "Name",
+                    helpText: "Used when generating ZIP files.",
+                    defaultValue: defaultNameForSourceValue_({}),
+                })),
+                new studio.EnumField("theme", {
+                    title: "Theme",
+                    buttons: true,
+                    options: [
+                        { id: "light", title: "Light" },
+                        { id: "dark", title: "Dark" },
+                        { id: "custom", title: "Custom" },
+                    ],
+                    defaultValue: "light",
+                }),
+                (customColorField = new studio.ColorField("color", {
+                    title: "Color",
+                    defaultValue: "rgba(33, 150, 243, .6)",
+                    alpha: true,
+                })),
+            ],
+        });
+        this.form.onChange((field) => {
+            let values = this.form.getValues();
+            $(".outputs-panel").attr("data-theme", values.theme);
+            customColorField.setEnabled(values.theme == "custom");
+            this.regenerateDebounced_();
+        });
+    }
+
+    regenerate() {
+        let values = this.form.getValues();
+        values.name = values.name || "ic_action";
+
+        this.zipper.clear();
+        this.zipper.setZipFilename(`${values.name}.zip`);
+
+        this.densities.forEach((density) => {
+            let mult = studio.Util.getMultBaseMdpi(density);
+            let iconSize = studio.Util.multRound(ICON_SIZE, mult);
+
+            let outCtx = studio.Drawing.context(iconSize);
+            let tmpCtx = studio.Drawing.context(iconSize);
+
+            if (values.source.ctx) {
+                let srcCtx = values.source.ctx;
+                studio.Drawing.drawCenterInside(
+                    tmpCtx,
+                    srcCtx,
+                    studio.Util.mult(TARGET_RECT, mult),
+                    {
+                        x: 0,
+                        y: 0,
+                        w: srcCtx.canvas.width,
+                        h: srcCtx.canvas.height,
+                    }
+                );
             }
-          },
-        }),
-        (nameField = new studio.TextField("name", {
-          newGroup: true,
-          title: "Name",
-          helpText: "Used when generating ZIP files.",
-          defaultValue: defaultNameForSourceValue_({}),
-        })),
-        new studio.EnumField("theme", {
-          title: "Theme",
-          buttons: true,
-          options: [
-            { id: "light", title: "Light" },
-            { id: "dark", title: "Dark" },
-            { id: "custom", title: "Custom" },
-          ],
-          defaultValue: "light",
-        }),
-        (customColorField = new studio.ColorField("color", {
-          title: "Color",
-          defaultValue: "rgba(33, 150, 243, .6)",
-          alpha: true,
-        })),
-      ],
-    });
-    this.form.onChange((field) => {
-      let values = this.form.getValues();
-      $(".outputs-panel").attr("data-theme", values.theme);
-      customColorField.setEnabled(values.theme == "custom");
-      this.regenerateDebounced_();
-    });
-  }
 
-  regenerate() {
-    let values = this.form.getValues();
-    values.name = values.name || "ic_action";
+            let color = values.color;
+            if (values.theme == "light") {
+                color = tinycolor("rgba(0, 0, 0, .54)");
+            } else if (values.theme == "dark") {
+                color = tinycolor("#fff");
+            }
 
-    this.zipper.clear();
-    this.zipper.setZipFilename(`${values.name}.zip`);
+            let alpha = color.getAlpha();
+            color.setAlpha(1);
 
-    this.densities.forEach((density) => {
-      let mult = studio.Util.getMultBaseMdpi(density);
-      let iconSize = studio.Util.multRound(ICON_SIZE, mult);
+            studio.Effects.fx(
+                [
+                    {
+                        effect: "fill-color",
+                        color: color.toRgbString(),
+                        opacity: alpha,
+                    },
+                ],
+                outCtx,
+                tmpCtx,
+                iconSize
+            );
 
-      let outCtx = studio.Drawing.context(iconSize);
-      let tmpCtx = studio.Drawing.context(iconSize);
+            color.setAlpha(alpha);
 
-      if (values.source.ctx) {
-        let srcCtx = values.source.ctx;
-        studio.Drawing.drawCenterInside(
-          tmpCtx,
-          srcCtx,
-          studio.Util.mult(TARGET_RECT, mult),
-          { x: 0, y: 0, w: srcCtx.canvas.width, h: srcCtx.canvas.height }
-        );
-      }
+            this.zipper.add({
+                name: `res/drawable-${density}/${values.name}.png`,
+                canvas: outCtx.canvas,
+            });
 
-      let color = values.color;
-      if (values.theme == "light") {
-        color = tinycolor("rgba(0, 0, 0, .54)");
-      } else if (values.theme == "dark") {
-        color = tinycolor("#fff");
-      }
-
-      let alpha = color.getAlpha();
-      color.setAlpha(1);
-
-      studio.Effects.fx(
-        [{ effect: "fill-color", color: color.toRgbString(), opacity: alpha }],
-        outCtx,
-        tmpCtx,
-        iconSize
-      );
-
-      color.setAlpha(alpha);
-
-      this.zipper.add({
-        name: `res/drawable-${density}/${values.name}.png`,
-        canvas: outCtx.canvas,
-      });
-
-      this.setImageForSlot_(density, outCtx.canvas.toDataURL());
-    });
-  }
+            this.setImageForSlot_(density, outCtx.canvas.toDataURL());
+        });
+    }
 }

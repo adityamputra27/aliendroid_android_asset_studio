@@ -21,101 +21,112 @@ import $ from "jquery";
  * broken out into a more MVC-like architecture in the future.
  */
 export class Field {
-  /**
-   * Instantiates a new field with the given ID and parameters.
-   * @constructor
-   */
-  constructor(id, params) {
-    this.id_ = id;
-    this.params_ = params;
-    if (this.params_.onChange) {
-      this.onChange(this.params_.onChange);
+    /**
+     * Instantiates a new field with the given ID and parameters.
+     * @constructor
+     */
+    constructor(id, params) {
+        this.id_ = id;
+        this.params_ = params;
+        if (this.params_.onChange) {
+            this.onChange(this.params_.onChange);
+        }
+        this.enabled_ = true;
     }
-    this.enabled_ = true;
-  }
 
-  /**
-   * Sets the form owner of the field. Internally called by
-   * {@link studio.Form}.
-   * @private
-   * @param {studio.Form} form The owner form.
-   */
-  setForm_(form) {
-    this.form_ = form;
-    this.onChange((newValue, oldValue) => {
-      this.form_.notifyChanged_(this, newValue, oldValue);
-    });
-  }
+    /**
+     * Sets the form owner of the field. Internally called by
+     * {@link studio.Form}.
+     * @private
+     * @param {studio.Form} form The owner form.
+     */
+    setForm_(form) {
+        this.form_ = form;
+        this.onChange((newValue, oldValue) => {
+            this.form_.notifyChanged_(this, newValue, oldValue);
+        });
+    }
 
-  /**
-   * Returns a complete ID.
-   * @type String
-   */
-  getLongId() {
-    return this.form_.id_ + "-" + this.id_;
-  }
+    /**
+     * Returns a complete ID.
+     * @type String
+     */
+    getLongId() {
+        return this.form_.id_ + "-" + this.id_;
+    }
 
-  /**
-   * Returns the ID for the form's UI element (or container).
-   * @type String
-   */
-  getHtmlId() {
-    return "_frm-" + this.getLongId();
-  }
+    /**
+     * Returns the ID for the form's UI element (or container).
+     * @type String
+     */
+    getHtmlId() {
+        return "_frm-" + this.getLongId();
+    }
 
-  /**
-   * Generates the UI elements for a form field container. Not very portable
-   * outside the Asset Studio UI. Intended to be overriden by descendents.
-   * @private
-   * @param {HTMLElement} container The destination element to contain the
-   * field.
-   */
-  createUi(container) {
-    container = $(container);
-    this.baseEl_ = $("<div>")
-      .addClass("form-field-outer")
-      .addClass(this.params_.newGroup ? "is-new-group" : "")
-      .append(
-        $("<label>")
-          .attr("for", this.getHtmlId())
-          .text(this.params_.title)
-          .append(
+    /**
+     * Generates the UI elements for a form field container. Not very portable
+     * outside the Asset Studio UI. Intended to be overriden by descendents.
+     * @private
+     * @param {HTMLElement} container The destination element to contain the
+     * field.
+     */
+    createUi(container) {
+        container = $(container);
+        let append = $("<div>").addClass("form-field-outer");
+
+        if (this.params_.isGroup) {
+            append.append(
+                $("<div>")
+                    .addClass("main-title")
+                    .append($("<label>").text(this.params_.mainTitleGroup))
+            );
+        }
+
+        append.append(
             $("<div>")
-              .addClass("form-field-help-text")
-              .css("display", this.params_.helpText ? "" : "none")
-              .html(this.params_.helpText)
-          )
-      )
-      .append($("<div>").addClass("form-field-container"))
-      .appendTo(container);
-    return this.baseEl_;
-  }
+                .addClass(
+                    `form-field-container ${
+                        this.params_.flexChild ? "form-flex-child" : ""
+                    }`
+                )
+                .append(
+                    $("<label>")
+                        .attr("for", this.getHtmlId())
+                        .text(this.params_.title)
+                )
+        );
 
-  getEnabled() {
-    return this.enabled_;
-  }
-
-  /**
-   * Enables or disables the form field.
-   */
-  setEnabled(enabled) {
-    this.enabled_ = enabled;
-    if (this.baseEl_) {
-      if (enabled) {
-        this.baseEl_.removeAttr("disabled");
-      } else {
-        this.baseEl_.attr("disabled", "disabled");
-      }
+        this.baseEl_ = append.appendTo(container);
+        return this.baseEl_;
     }
-  }
 
-  onChange(listener) {
-    this.changeListeners_ = (this.changeListeners_ || []).concat([listener]);
-  }
+    getEnabled() {
+        return this.enabled_;
+    }
 
-  notifyChanged_(newValue, oldValue) {
-    (this.changeListeners_ || []).forEach((listener) =>
-      listener(newValue, oldValue)
-    );
-  }
+    /**
+     * Enables or disables the form field.
+     */
+    setEnabled(enabled) {
+        this.enabled_ = enabled;
+        if (this.baseEl_) {
+            if (enabled) {
+                this.baseEl_.removeAttr("disabled");
+            } else {
+                this.baseEl_.attr("disabled", "disabled");
+            }
+        }
+    }
+
+    onChange(listener) {
+        this.changeListeners_ = (this.changeListeners_ || []).concat([
+            listener,
+        ]);
+    }
+
+    notifyChanged_(newValue, oldValue) {
+        (this.changeListeners_ || []).forEach((listener) =>
+            listener(newValue, oldValue)
+        );
+    }
 }
